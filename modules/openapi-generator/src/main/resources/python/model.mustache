@@ -60,14 +60,14 @@ class {{classname}}(OpenApiModel):
 {{/additionalProperties}}
     """
     openapi_types = {
-{{#allVars}}
+{{#vars}}
         '{{name}}': [{{{dataType}}}]{{#hasMore}},{{/hasMore}}  # noqa: E501
-{{/allVars}}
+{{/vars}}
     }
     attribute_map = {
-{{#allVars}}
+{{#vars}}
         '{{name}}': '{{baseName}}'{{#hasMore}},{{/hasMore}}  # noqa: E501
-{{/allVars}}
+{{/vars}}
     }
 {{#additionalProperties}}
     additional_properties_type = [{{{dataType}}}]  # noqa: E501
@@ -186,7 +186,7 @@ class {{classname}}(OpenApiModel):
             [name]
         )
 
-{{#allVars}}
+{{#vars}}
     @property
     def {{name}}(self):
         """Gets the {{name}} of this {{classname}}.  # noqa: E501
@@ -285,7 +285,7 @@ class {{classname}}(OpenApiModel):
             {{name}}
         )
 
-{{/allVars}}
+{{/vars}}
 {{#discriminator}}
     def get_real_child_model(self, data):
         """Returns the real base class specified by the discriminator"""

@@ -58,7 +58,13 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
         // at the moment
         importMapping.clear();
 
-        supportsInheritance = true;
+        // The Python client models do not support native Python inheritance.
+        //
+        // This way we can safely loop over the `vars` instead of `allVars`
+        // in the model.mustache and model_doc.mustache files.
+        // The wanted variables stay correct then.
+        //
+        // supportsInheritance = true;
         modelPackage = "models";
         apiPackage = "api";
         outputFolder = "generated-code" + File.separatorChar + "python";
