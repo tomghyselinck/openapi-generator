@@ -321,21 +321,27 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
     // override with any special post-processing for all models
     @SuppressWarnings({"static-method", "unchecked"})
     public Map<String, Object> postProcessAllModels(Map<String, Object> objs) {
+        Map<String, Object> result = super.postProcessAllModels(objs);
         // loop through properties of each model to update
         // the model imports to absolute paths
-        for (Map.Entry<String, Object> entry : objs.entrySet()) {
+        for (Map.Entry<String, Object> entry : result.entrySet()) {
             Map<String, Object> inner = (Map<String, Object>) entry.getValue();
             List<Map<String, Object>> models = (List<Map<String, Object>>) inner.get("models");
             for (Map<String, Object> mo : models) {
                 CodegenModel cm = (CodegenModel) mo.get("model");
                 // clear out imports so we will only include full path imports
                 cm.imports.clear();
+                if (cm.children != null) {
+                    for (CodegenModel child : cm.children) {
+                        addModelImport(result, cm, child.name);
+                    }
+                }
                 CodegenDiscriminator discriminator = cm.discriminator;
                 if (discriminator != null) {
                     Set<CodegenDiscriminator.MappedModel> mappedModels = discriminator.getMappedModels();
                     for (CodegenDiscriminator.MappedModel mappedModel : mappedModels) {
                         String otherModelName = mappedModel.getModelName();
-                        addModelImport(objs, cm, otherModelName);
+                        addModelImport(result, cm, otherModelName);
                     }
                 }
                 ArrayList<List<CodegenProperty>> listOfLists= new ArrayList<List<CodegenProperty>>();
@@ -355,14 +361,14 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
                           }
                       }
                       if (otherModelName != null) {
-                          addModelImport(objs, cm, otherModelName);
+                          addModelImport(result, cm, otherModelName);
                       }
                   }
                 }
             }
         }
 
-        return objs;
+        return result;
     }
 
     /*
