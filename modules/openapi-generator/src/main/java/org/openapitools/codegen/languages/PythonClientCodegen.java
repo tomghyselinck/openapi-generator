@@ -351,6 +351,9 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
                 listOfLists.add(cm.vars);
                 for (List<CodegenProperty> varList : listOfLists) {
                   for (CodegenProperty cp : varList) {
+                      if (StringUtils.isNotEmpty(cp.pattern)) {
+                          addImport(cm, "import re");
+                      }
                       String otherModelName = null;
                       if (cp.complexType != null) {
                           otherModelName = cp.complexType;
