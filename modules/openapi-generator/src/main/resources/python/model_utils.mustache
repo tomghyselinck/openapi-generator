@@ -315,28 +315,32 @@ def deserialize_model(model_data, model_class, path_to_item, configuration):
         ApiValueError
         ApiKeyError
     """
+    if hasattr(model_class, 'get_real_child_model'):
+        discriminator_class = model_class.get_real_child_model(model_data)
+        if discriminator_class:
+            return deserialize_model(model_data, discriminator_class, path_to_item, configuration)
+
     fixed_model_data = copy.deepcopy(model_data)
+
+    kw_args = dict(_check_type=True,
+                   _path_to_item=path_to_item,
+                   _configuration=configuration)
 
     if isinstance(fixed_model_data, dict):
         fixed_model_data = change_keys_js_to_python(fixed_model_data,
                                                     model_class)
 
-    kw_args = dict(_check_type=True,
-                   _path_to_item=path_to_item,
-                   _configuration=configuration)
     if isinstance(model_data, list):
         instance = model_class(*model_data, **kw_args)
     elif isinstance(model_data, dict):
         kw_args.update(fixed_model_data)
         instance = model_class(**kw_args)
-
-    if hasattr(instance, 'get_real_child_model'):
-        discriminator_class = instance.get_real_child_model(model_data)
-        if discriminator_class:
-            if isinstance(model_data, list):
-                instance = discriminator_class(*model_data, **kw_args)
-            elif isinstance(model_data, dict):
-                instance = discriminator_class(**kw_args)
+    else:
+        raise ApiValueError("Failed to instantiate {0} from {1}".format(
+                get_py3_class_name(model_class), repr(model_data)
+            ),
+            path_to_item=path_to_item
+        )
 
     return instance
 
