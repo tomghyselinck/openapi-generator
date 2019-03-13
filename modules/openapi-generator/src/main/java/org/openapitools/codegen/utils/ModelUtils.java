@@ -593,6 +593,8 @@ public class ModelUtils {
             Schema referencedSchema = getSchema(openAPI, name);
             if (referencedSchema != null) {
                 return referencedSchema;
+            } else {
+                LOGGER.error("Could not find schema with name '" + name + "'");
             }
         }
         return schema;
