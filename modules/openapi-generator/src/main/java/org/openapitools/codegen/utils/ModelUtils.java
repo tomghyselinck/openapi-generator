@@ -946,4 +946,16 @@ public class ModelUtils {
 
         return false;
     }
+
+    public static boolean isEnum(Schema schema) {
+        if (schema == null) {
+            return false;
+        }
+
+        if (schema.getEnum() != null && !schema.getEnum().isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
 }

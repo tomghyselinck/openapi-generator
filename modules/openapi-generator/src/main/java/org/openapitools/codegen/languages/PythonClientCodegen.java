@@ -501,6 +501,23 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
         if (suffix == ")") {
             typeSuffix = "," + suffix;
         }
+
+        // XXX - (1) Q&D fix to make sure that 'enum' string/integer/... type aliases are properly converted:
+        //
+        // FIXME - Introducing this poses a warning during codegen:
+        //         WARN  o.o.codegen.DefaultCodegen - allOf with multiple schemas defined. Using only the first one: <some_type>.
+        //         To fully utilize allOf, please use $ref instead of inline schema definition
+        //
+        // It seems to work though...
+        //
+        Schema referencedSchema = ModelUtils.getReferencedSchema(this.openAPI, p);
+        if (ModelUtils.isEnum(referencedSchema)) {
+            LOGGER.info("Referenced schema '" + getSimpleTypeDeclaration(p) + "' is an enum of type '" + referencedSchema.getType() + "' => '" + getSimpleTypeDeclaration(referencedSchema) + "' (" + referencedSchema.getEnum() + "). Adding referenced type.");
+            typeSuffix = ", " + getSimpleTypeDeclaration(referencedSchema) + suffix;
+        } else {
+            LOGGER.debug("Referenced schema '" + getSimpleTypeDeclaration(p) + "' is not an enum (type '" + referencedSchema.getType() + "' => '" + getSimpleTypeDeclaration(referencedSchema) + "')");
+        }
+
         if (ModelUtils.isNullable(p)) {
             typeSuffix = ", none_type" + suffix;
         }
@@ -519,6 +536,23 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
             return prefix + "[" + getTypeString(inner, "(", ")") + "]" + typeSuffix;
         }
         String baseType = getSimpleTypeDeclaration(p);
+
+        // XXX - (2) Alternative Q&D fix for 'enum' conversions:
+        //
+        // FIXME - Introducing this poses a warning during codegen:
+        //         WARN  o.o.codegen.DefaultCodegen - allOf with multiple schemas defined. Using only the first one: <some_type>.
+        //         To fully utilize allOf, please use $ref instead of inline schema definition
+        //
+        // It seems to work though...
+        //
+        // Schema referencedSchema = ModelUtils.getReferencedSchema(this.openAPI, p);
+        // if (ModelUtils.isEnum(referencedSchema)) {
+        //     LOGGER.info("Referenced schema '" + baseType + "' is an enum of type '" + referencedSchema.getType() + "' => '" + getSimpleTypeDeclaration(referencedSchema) + "' (" + referencedSchema.getEnum() + "). Setting baseType as its referenced type.");
+        //     baseType = getSimpleTypeDeclaration(referencedSchema);
+        // } else {
+        //     LOGGER.debug("Referenced schema '" + baseType + "' is not an enum (type '" + referencedSchema.getType() + "' => '" + getSimpleTypeDeclaration(referencedSchema) + "')");
+        // }
+
         if (baseType == "file") {
             baseType = "file_type";
         }
