@@ -21,7 +21,9 @@ REQUIRES = [
 ]
 
 PACKAGES = set(find_packages())
-PACKAGES.update(set(find_namespace_packages(include=['{{{packageName}}}*'])))
+PACKAGES.update(set(find_namespace_packages(
+    include=['{{{packageName}}}*'],
+    exclude=['{{{packageName}}}.openapi'])))
 
 setup(
     name=NAME,
