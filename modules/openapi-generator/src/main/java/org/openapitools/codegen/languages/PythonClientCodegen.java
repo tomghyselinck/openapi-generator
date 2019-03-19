@@ -217,7 +217,8 @@ public class PythonClientCodegen extends DefaultCodegen implements CodegenConfig
             apiDocPath = packagePath() + File.separatorChar + apiDocPath;
             modelDocPath = packagePath() + File.separatorChar + modelDocPath;
         }
-        // make api and model doc path available in mustache template
+        // make package, api and model doc path available in mustache template
+        additionalProperties.put("packagePath", packagePath());
         additionalProperties.put("apiDocPath", apiDocPath);
         additionalProperties.put("modelDocPath", modelDocPath);
 
