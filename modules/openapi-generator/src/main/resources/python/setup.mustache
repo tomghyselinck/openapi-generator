@@ -24,6 +24,9 @@ REQUIRES.append("aiohttp >= 3.0.0")
 REQUIRES.append("tornado>=4.2,<5")
 {{/tornado}}
 
+PACKAGES = set(find_packages())
+PACKAGES.update(set(find_namespace_packages(include=['{{{packageName}}}*'])))
+
 setup(
     name=NAME,
     version=VERSION,
@@ -37,8 +40,7 @@ setup(
             'future',
         ],
     },
-    packages=find_packages(),
-    namespace_packages=find_namespace_packages('{{{packagePath}}}*'),
+    packages=PACKAGES,
     include_package_data=True,
     long_description="""\
     {{appDescription}}  # noqa: E501
