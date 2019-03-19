@@ -20,6 +20,9 @@ REQUIRES = [
     "typing==3.5.2.2"{{/supportPython2}}
 ]
 
+PACKAGES = set(find_packages())
+PACKAGES.update(set(find_namespace_packages(include=['{{{packageName}}}*'])))
+
 setup(
     name=NAME,
     version=VERSION,
@@ -28,8 +31,7 @@ setup(
     url="{{packageUrl}}",
     keywords=["OpenAPI", "{{appName}}"],
     install_requires=REQUIRES,
-    packages=find_packages(),
-    namespace_packages=find_namespace_packages('{{{packagePath}}}*'),
+    packages=PACKAGES,
     package_data={'': ['openapi/openapi.yaml']},
     include_package_data=True,
     entry_points={
