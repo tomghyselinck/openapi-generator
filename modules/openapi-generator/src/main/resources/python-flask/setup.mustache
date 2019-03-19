@@ -29,7 +29,7 @@ setup(
     keywords=["OpenAPI", "{{appName}}"],
     install_requires=REQUIRES,
     packages=find_packages(),
-    namepace_packages=find_namespace_packages('{{{packagePath}}}*'),
+    namespace_packages=find_namespace_packages('{{{packagePath}}}*'),
     package_data={'': ['openapi/openapi.yaml']},
     include_package_data=True,
     entry_points={
