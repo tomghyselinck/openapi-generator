@@ -199,6 +199,8 @@ public class PythonAbstractConnexionServerCodegen extends DefaultCodegen impleme
             additionalProperties.put(SUPPORT_PYTHON2, Boolean.TRUE);
             typeMapping.put("long", "long");
         }
+        // make package path available in mustache template
+        additionalProperties.put("packagePath", packagePath());
         supportingFiles.add(new SupportingFile("__main__.mustache", packagePath(), "__main__.py"));
         supportingFiles.add(new SupportingFile("util.mustache", packagePath(), "util.py"));
         supportingFiles.add(new SupportingFile("__init__.mustache", packagePath() + File.separatorChar + controllerPackage, "__init__.py"));
